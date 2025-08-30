@@ -45,6 +45,7 @@ type Actress = Person & {
   nationality: ActressNatioonality;
 };
 
+
 //#Snack 3
 // Crea una funzione getActress che, dato un id, effettua una chiamata a:
 // GET /actresses/:id
@@ -84,4 +85,35 @@ async function getActress(id: number): Promise<Actress | null> {                
     }
     return null;
   };
-}
+};
+
+
+//#Snack 4
+// Crea una funzione getAllActresses che chiama:
+// GET /actresses
+// La funzione deve restituire un array di oggetti Actress.
+// Può essere anche un array vuoto.
+
+ function isActressArray(dati: any): dati is Actress[] {                      //funzione per verificare se dati è di tipo Actress[]
+  return (
+    dati instanceof Array && dati.every(isActress)                           //dati is array e ogni elemento è di tipo Actress
+  );
+};
+
+async function getAllActresses(): Promise<Actress[]> {                        //ritorna una Promise che risolve in Actress[]
+  try{
+    const response = await fetch(`https://api.example.com/actresses`);        //chiamata API
+    const dati : unknown = await response.json();                             //dati di tipo unknown
+    if(!isActressArray(dati)){                                               //se dati non è di tipo Actress[]
+      throw new Error('Dati non conformi al tipo Actress[]');
+    };
+    return dati;
+  }catch (error) {
+    if(error instanceof Error){                                              //se è un errore di tipo Error
+      console.error(`Errore nella chiamata API: ${error.message}`);          //stampa il messaggio di errore
+    } else {
+      console.error('Errore sconosciuto:', error);
+    }
+    return [];                                                              //ritorna array vuoto in caso di errore
+  };
+};
