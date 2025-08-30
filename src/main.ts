@@ -102,12 +102,14 @@ async function getActress(id: number): Promise<Actress | null> {                
 
 async function getAllActresses(): Promise<Actress[]> {                        //ritorna una Promise che risolve in Actress[]
   try{
-    const response = await fetch(`https://api.example.com/actresses`);        //chiamata API
-    const dati : unknown = await response.json();                             //dati di tipo unknown
-    if(!isActressArray(dati)){                                               //se dati non è di tipo Actress[]
-      throw new Error('Dati non conformi al tipo Actress[]');
+    const response = await fetch(`https://api.example.com/actresses`);       //chiamata API                        
+    if(!response.ok){                                                        //se dati non è di tipo Actress[]
+      throw new Error('Dati non conformi al tipo Actress[]');                //lancia errore
     };
-    return dati;
+    const dati : unknown = await response.json();                            //dati di tipo unknown
+    if(!(dati instanceof Array)){                                            //se dati non è un array
+      throw new Error('Dati non conformi al tipo array!');                   //lancia errore
+    };
   }catch (error) {
     if(error instanceof Error){                                              //se è un errore di tipo Error
       console.error(`Errore nella chiamata API: ${error.message}`);          //stampa il messaggio di errore
